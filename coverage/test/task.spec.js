@@ -1,0 +1,101 @@
+import { it, jest, describe, beforeEach, expect } from '@jest/globals'
+import { Task } from '../src/task.js'
+
+describe('Task Test Suit', () => {
+  let _logMock;
+  let _task;
+  let _clearMock;
+
+  beforeEach(() => {
+    _logMock = jest.spyOn(console, console.log.name)
+      .mockImplementation()
+    _task = new Task()
+  })
+
+  it.skip ('should only run tasks that are due without fake timers (slow)', async () => {
+    const tasks = [
+      { 
+        name: 'Task-Will-Run-In-5-Secs',
+        dueAt: new Date(Date.now() + 5000), // 5 secs
+        fn: jest.fn()
+      },
+      { 
+        name: 'Task-Will-Run-In-10-Secs',
+        dueAt: new Date(Date.now() + 10000), // 10 secs
+        fn: jest.fn()
+      }
+    ]
+
+    _task.save(tasks.at(0))
+    _task.save(tasks.at(1))
+
+    _task.run(200)
+
+    await setTimeout(11e3)
+
+    expect(tasks.at(0).fn).toHaveBeenCalled()
+    expect(tasks.at(1).fn).toHaveBeenCalled()
+  }, 
+    // configurar para o jest aguardar 15 secs
+    15e3
+  )
+
+  it ('should only run tasks that are due with fake timers (fast)', async () => {
+    jest.useFakeTimers()
+
+    const tasks = [
+      { 
+        name: 'Task-Will-Run-In-5-Secs',
+        dueAt: new Date(Date.now() + 5000), // 5 secs
+        fn: jest.fn()
+      },
+      { 
+        name: 'Task-Will-Run-In-10-Secs',
+        dueAt: new Date(Date.now() + 10000), // 10 secs
+        fn: jest.fn()
+      }
+    ]
+
+    _task.save(tasks.at(0))
+    _task.save(tasks.at(1))
+
+    _task.run(200)
+
+    jest.advanceTimersByTime(4000)
+    expect(tasks.at(0).fn).not.toHaveBeenCalled()
+    expect(tasks.at(1).fn).not.toHaveBeenCalled()
+
+    jest.advanceTimersByTime(2000)
+    expect(tasks.at(0).fn).toHaveBeenCalled()
+    expect(tasks.at(1).fn).not.toHaveBeenCalled()
+
+    jest.advanceTimersByTime(4000)
+    expect(tasks.at(1).fn).toHaveBeenCalled()
+
+    jest.useRealTimers()
+  })
+
+  it.skip ('should clear interval', async () => {
+    jest.useFakeTimers()
+
+    const tasks = [
+      { 
+        name: 'Task-Will-Run-In-5-Secs',
+        dueAt: new Date(Date.now() + 5000), // 5 secs
+        fn: jest.fn()
+      }
+    ]
+
+    _task.save(tasks.at(0))
+  
+    _task.run(200)
+
+    jest.advanceTimersByTime(4000)
+    expect(tasks.at(0).fn).not.toHaveBeenCalled()
+
+    jest.advanceTimersByTime(2000)
+    expect(tasks.at(0).fn).toHaveBeenCalled()
+    
+    jest.useRealTimers()
+  })
+})
