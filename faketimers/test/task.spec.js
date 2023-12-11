@@ -1,76 +1,77 @@
-import { it, jest, describe, beforeEach, expect } from '@jest/globals'
-import { Task } from '../src/task.js'
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { setTimeout } from 'node:timers/promises';
+import { Task } from '../src/task.js';
 
-describe('Task Test Suit', () => {
+describe('Task Test Suite', () => {
   let _logMock;
-  let _task;
-
+  let _task
   beforeEach(() => {
-    _logMock = jest.spyOn(console, console.log.name)
+    _logMock = jest
+      .spyOn(console, console.log.name)
       .mockImplementation()
+
     _task = new Task()
   })
 
-  it.skip ('should only run tasks that are due without fake timers (slow)', async () => {
+  it.skip('should only run tasks that are due without fake timers (slow)', async () => {
+    // Arange
     const tasks = [
       { 
         name: 'Task-Will-Run-In-5-Secs',
-        dueAt: new Date(Date.now() + 5000), // 5 secs
+        dueAt: new Date(Date.now() + 5_000),
         fn: jest.fn()
       },
       { 
         name: 'Task-Will-Run-In-10-Secs',
-        dueAt: new Date(Date.now() + 10000), // 10 secs
+        dueAt: new Date(Date.now() + 10_000),
         fn: jest.fn()
       }
     ]
 
+    // Act
     _task.save(tasks.at(0))
     _task.save(tasks.at(1))
 
     _task.run(200)
 
-    await setTimeout(11e3)
-
+    await setTimeout(11e3) // 11_000
     expect(tasks.at(0).fn).toHaveBeenCalled()
     expect(tasks.at(1).fn).toHaveBeenCalled()
-  }, 
-    // configurar para o jest aguardar 15 secs
-    15e3
-  )
+  }, 15e3)
 
-  it ('should only run tasks that are due with fake timers (fast)', async () => {
+  it('should only run tasks that are due with fake timers (fast)', async () => {
     jest.useFakeTimers()
 
+    // Arange
     const tasks = [
       { 
         name: 'Task-Will-Run-In-5-Secs',
-        dueAt: new Date(Date.now() + 5000), // 5 secs
+        dueAt: new Date(Date.now() + 5_000),
         fn: jest.fn()
       },
       { 
         name: 'Task-Will-Run-In-10-Secs',
-        dueAt: new Date(Date.now() + 10000), // 10 secs
+        dueAt: new Date(Date.now() + 10_000),
         fn: jest.fn()
       }
     ]
 
+    // Act
     _task.save(tasks.at(0))
     _task.save(tasks.at(1))
 
     _task.run(200)
 
-    jest.advanceTimersByTime(4000)
+    jest.advanceTimersByTime(4e3)
     expect(tasks.at(0).fn).not.toHaveBeenCalled()
     expect(tasks.at(1).fn).not.toHaveBeenCalled()
 
-    jest.advanceTimersByTime(2000)
+    jest.advanceTimersByTime(2e3)
     expect(tasks.at(0).fn).toHaveBeenCalled()
     expect(tasks.at(1).fn).not.toHaveBeenCalled()
 
-    jest.advanceTimersByTime(4000)
+    jest.advanceTimersByTime(4e3)
+    expect(tasks.at(0).fn).toHaveBeenCalled()
     expect(tasks.at(1).fn).toHaveBeenCalled()
-
-    jest.useRealTimers()
   })
 })

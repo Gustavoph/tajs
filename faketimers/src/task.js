@@ -1,19 +1,18 @@
 export class Task {
   #tasks = new Set()
 
-  save ({ name, dueAt, fn })  {
-    console.log(`task [${name}] saved and will be executed at ${dueAt.toISOString()}`)
+  save ({ name, dueAt, fn }) {
+    console.log(`Task [${name}] saved and will be executed at ${dueAt.toISOString()}`)
     this.#tasks.add({ name, dueAt, fn })
   }
 
   run (everyMs) {
     const intervalId = setInterval(() => {
       const now = new Date()
-      
+
       if (this.#tasks.size === 0) {
-        console.log('tasks finished!')
+        console.log('Tasks finished successfully.')
         clearInterval(intervalId)
-        return
       }
 
       for (const task of this.#tasks) {

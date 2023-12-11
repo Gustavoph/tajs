@@ -1,28 +1,29 @@
-import { Task } from './task.js'
+import { Task } from './task.js';
 
 const oneSecond = 1000
-const runInASec = new Date(Date.now() + oneSecond)
-const runInTwSecs = new Date(Date.now() + oneSecond * 2)
-const runInThreeeSecs = new Date(Date.now() + oneSecond * 3)
+const runInASec = new Date(Date.now() + oneSecond);
+const runInTwSecs = new Date(Date.now() + oneSecond * 2);
+const runInThreeSecs = new Date(Date.now() + oneSecond * 3);
 
 const task = new Task()
 
 task.save({
-  name: 'task1',
+  name: 'Task 1',
   dueAt: runInASec,
-  fn: () => console.log('Task1 executed')
+  fn: () => console.log('Task 1 executed successfully.')
 })
 
 task.save({
-  name: 'task2',
+  name: 'Task 2',
   dueAt: runInTwSecs,
-  fn: () => console.log('Task2 executed')
+  fn: () => console.log('Task 2 executed successfully.')
 })
 
+
 task.save({
-  name: 'task3',
-  dueAt: runInThreeeSecs,
-  fn: () => console.log('Task3 executed')
+  name: 'Task 3',
+  dueAt: runInThreeSecs,
+  fn: () => console.log('Task 3 executed successfully.')
 })
 
 
