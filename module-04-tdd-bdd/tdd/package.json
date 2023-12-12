@@ -1,0 +1,24 @@
+{
+  "name": "aula01-setup-jest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": "20.5.1"
+  },
+  "author": {
+    "email": "gusta.coliveira07@gmail.com",
+    "name": "Gustavo Oliveira",
+    "url": "https://github.com/Gustavoph"
+  },
+  "dependencies": {
+    "jest": "^29.7.0"
+  },
+  "scripts": {
+    "start": "node --watch src/index.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --injectGlobals false --runInBand --injectGlobals false test/",
+    "test:dev": "NODE_OPTIONS=--experimental-vm-modules npx jest --injectGlobals false --runInBand --injectGlobals false --watchAll test/",
+    "test:debug": "node --experimental-vm-modules --inspect-brk node_modules/.bin/jest --injectGlobals false --runInBand --injectGlobals false --watchAll test/"
+  }
+}
